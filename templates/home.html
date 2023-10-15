@@ -1,0 +1,112 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE-edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+        integrity="sha384-d7IYUORvWZ8WRHPZF6tfVy5V16B/xeFRRSRMqNRABhPMXegj1Y5t5N0b0MZ5awmU"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/overview.css' %}">
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <title>HomePAGE new</title>
+    <style>
+        body {
+            color: var(--text-color);
+            background: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-container">
+        <a href="/admin/" class="admin-button">Admin Panel</a>
+        <img src="{% static 'images/ulogo.png' %}" alt="Your Logo" class="logo">
+        <h1 class="home-text">Add Unique Code</h1>
+        <div class="home-container2">
+            <div class="home-container3"></div>
+            <input type="text" id="num_of_code" placeholder="How many Codes" class="home-input input" />
+            <input type="text" id="value_of_code" placeholder="Value" class="home-textinput input" />
+            <button type="button" class="button" onclick="sendDataToAddAPI()">Add</button>
+        </div>
+        <div id="add-success-message" style="display: none; color: green;"></div>
+        <p style="margin-bottom: 20px;"></p>
+        <h1 class="home-text1">Paid Point</h1>
+        <div class="home-container4">
+            <div class="home-container5"></div>
+            <input type="text" id="phone_number" placeholder="Phone Number" class="home-textinput1 input" />
+            <input type="text" id="point_to_pay" placeholder="Point to Pay" class="home-textinput2 input" />
+            <button type="button" class="button" onclick="sendPaidPoint()">Paid</button>
+        </div>
+        <div id="paid-success-message" style="display: none; color: green;"></div>
+    </div>
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2023 Unnoti. All rights reserved.</p>
+        </div>
+    </footer>
+    <script>
+        function sendRequest(apiUrl, data, successMessageId) {
+            fetch(apiUrl, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    const successMessage = document.getElementById(successMessageId);
+                    successMessage.style.display = "block";
+                    successMessage.innerHTML = data.message;
+                } else if (data.error) {
+                    console.error("API Error:", data.error);
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        }
+
+        function sendDataToAddAPI() {
+            const num_of_code = document.querySelector("#num_of_code").value;
+            const value_of_code = document.querySelector("#value_of_code").value;
+            const apiUrl = "{% url 'add_codes_api' %}";  // Use the Django URL template tag
+            const data = {
+                num_of_code: num_of_code,
+                value_of_code: value_of_code,
+            };
+            sendRequest(apiUrl, data, "add-success-message");
+
+            // Clear input fields and show success message
+            document.querySelector("#num_of_code").value = "";
+            document.querySelector("#value_of_code").value = "";
+        }
+
+        function sendPaidPoint() {
+            const phone_number = document.querySelector("#phone_number").value;
+            const point_to_pay = document.querySelector("#point_to_pay").value;
+            const apiUrl = "{% url 'paid_point' %}";  // Use the Django URL template tag
+            const data = {
+                phone_number: phone_number,
+                point: point_to_pay,
+            };
+            sendRequest(apiUrl, data, "paid-success-message");
+
+            // Clear input fields and show success message
+            document.querySelector("#phone_number").value = "";
+            document.querySelector("#point_to_pay").value = "";
+        }
+    </script>
+</body>
+</html>

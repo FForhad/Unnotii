@@ -1,0 +1,123 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    scroll-behavior: smooth;
+    list-style: none;
+    text-decoration: none;
+}
+
+:root {
+    --main-color: #0077ff;
+    --text-color: #01011a;
+    --bg-color: #fff;
+    --big-font: 4rem;
+    --h2-font: 1.8rem;
+    --p-font: 0.9rem;
+}
+
+*::selection {
+    background: var(--main-color);
+    color: #fff;
+}
+
+body {
+    color: var(--text-color);
+    background: var(--bg-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Add the rest of your existing CSS rules below */
+
+.button {
+    background-color: rgb(116, 236, 162); /* Change the background color to white */
+    color: black; /* Change the text color to your main color */
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px; /* Adjust as needed for the desired level of roundness */
+}
+
+.button:hover {
+    background-color: var(--main-color); /* Change the background color on hover to your main color */
+    color: white;
+}
+/* Add the rest of your existing CSS rules below */
+
+.input {
+    border: 1px solid #ccc;
+    border-radius: 5px; /* Adjust as needed for the desired level of roundness */
+    padding: 10px;
+}
+
+.admin-button {
+    position: fixed;
+    top: 40px; /* Adjust as needed to position the button vertically */
+    right: 100px; /* Adjust as needed to position the button horizontally */
+    background-color: rgb(0, 191, 255); /* Change the background color to white */
+    color: rgb(0, 0, 0); /* Change the text color to your main color */
+    padding: 10px 20px;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+}
+
+/* Style for the Admin button on hover */
+.admin-button:hover {
+    background-color: var(--main-color); /* Change the background color on hover to your main color */
+    color: white;
+}
+
+.logo {
+    max-width: 100px; /* Adjust as needed to set the maximum width of your logo */
+    height: auto; /* This maintains the aspect ratio while resizing */
+    position: absolute;
+    top: 10px; /* Adjust as needed to position the logo vertically */
+    left: 100px; /* Adjust as needed to position the logo horizontally */
+}
+
+/* ... Your existing CSS code ... */
+
+/* Footer styles */
+.footer {
+    background: rgb(0, 191, 255);
+    color: rgb(0, 0, 0);
+    padding: 20px 0;
+    text-align: center;
+    position: absolute;
+    bottom: 0;
+    width: calc(100% - 200px); /* Adjust to set the margin on the left and right */
+    left: 100px; /* Set the left margin to 100px */
+    right: 100px; /* Set the right margin to 100px */
+}
+
+/* Remove or adjust these styles as needed */
+.footer-content {
+    
+}
+.footer p {
+    margin: 0;
+    font-size: var(--p-font);
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-links li {
+    display: inline;
+    margin-right: 20px;
+}
+
+.footer-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+
