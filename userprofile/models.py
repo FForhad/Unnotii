@@ -7,7 +7,7 @@ class Profile(models.Model):
     name = models.CharField(max_length=100)
     nid = models.CharField(max_length=16)
     address = models.CharField(max_length=200)
-    image = models.ImageField(upload_to='images/')
+    image = models.CharField(max_length=300)
     created_on = models.DateField(auto_now_add=True)
     updated_on = models.DateField(auto_now=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
