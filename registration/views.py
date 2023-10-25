@@ -144,9 +144,13 @@ class CustomLoginView(APIView):
         user = authenticate(phone_number=phone_number, password=password)
 
         if user is not None:
-            login(request, user)
-            token, created = Token.objects.get_or_create(user=user)
-            return Response({'token': token.key}, status=status.HTTP_200_OK)
+            if user.is_active:
+                login(request, user)
+                token, created = Token.objects.get_or_create(user=user)
+                return Response({'token': token.key}, status=status.HTTP_200_OK)
+            else:
+                # User is not active, need approval from admin
+                return Response({'error': 'Account is not active. Need approval from admin.'}, status=status.HTTP_401_UNAUTHORIZED)
         else:
             # Print debugging information
             print(f"Failed to authenticate user with phone_number: {phone_number} and password: {password}")

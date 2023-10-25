@@ -6,3 +6,4 @@ admin.site.site_header = "Unnoti Admin Panel"
 @admin.register(GivenToken)
 class GivenTokenAdmin(admin.ModelAdmin):
     list_display = ('gtoken', 'user','created_on')
+    search_fields = ('user__phone_number',)
