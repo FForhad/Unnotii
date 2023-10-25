@@ -21,53 +21,53 @@ from rest_framework.authtoken.models import Token
 # SMS_API_URL_TEMPLATE = "http://bulksmsbd.net/api/smsapi?api_key=drr6oD1PnMwW6WhuPNbV&type=text&number={}&senderid=8809617613176&message={}"
 # SMS_API_URL_TEMPLATE = "https://login.dianasms.com/api/v3/sms/send?api_key=224|mNinL0Koe9WLLIZDbFT9VgQsd2OaZDmUL5UlkXVF&type=text&number={}&senderid=8809601003664&message={}"
 # not working
-SMS_API_URL_TEMPLATE = "https://login.esms.com.bd/api/v3/sms/send"
+# SMS_API_URL_TEMPLATE = "https://login.esms.com.bd/api/v3/sms/send"
 # SMS_API_URL_TEMPLATE = "https://login.dianasms.com/api/v3/sms/send"
 
-@api_view(['POST'])
-def register_user(request):
-    phone_number = request.data.get('phone_number')
-    password = request.data.get('password')
+# @api_view(['POST'])
+# def register_user(request):
+#     phone_number = request.data.get('phone_number')
+#     password = request.data.get('password')
 
-    if not phone_number or not password:
-        return Response({'error': 'Phone number and password are required'}, status=status.HTTP_400_BAD_REQUEST)
+#     if not phone_number or not password:
+#         return Response({'error': 'Phone number and password are required'}, status=status.HTTP_400_BAD_REQUEST)
     
-    if UserProfile.objects.filter(phone_number=phone_number).exists():
-        return Response({'error': 'User with this phone number already exists'}, status=status.HTTP_400_BAD_REQUEST)
+#     if UserProfile.objects.filter(phone_number=phone_number).exists():
+#         return Response({'error': 'User with this phone number already exists'}, status=status.HTTP_400_BAD_REQUEST)
 
-    # Generate OTP
-    otp = ''.join(random.choices('0123456789', k=6))
-    otp_expiration = timezone.now() + timedelta(minutes=10)  # OTP expires in 10 minutes
+#     # Generate OTP
+#     otp = ''.join(random.choices('0123456789', k=6))
+#     otp_expiration = timezone.now() + timedelta(minutes=10)  # OTP expires in 10 minutes
 
-    # Send OTP via SMS API
-    sms_params = {
-        'recipient': phone_number,
-        'sender_id': '8809601003664',
-        'type': 'plain',
-        'message': f'Your OTP is {otp}'
-    }
+#     # Send OTP via SMS API
+#     sms_params = {
+#         'recipient': phone_number,
+#         'sender_id': '8809601003664',
+#         'type': 'plain',
+#         'message': f'Your OTP is {otp}'
+#     }
 
-    # You may need to set the Authorization header based on your specific API key
-    headers = {
-        'Authorization': 'Bearer 224|mNinL0Koe9WLLIZDbFT9VgQsd2OaZDmUL5UlkXVF'
-    }
+#     # You may need to set the Authorization header based on your specific API key
+#     headers = {
+#         'Authorization': 'Bearer 224|mNinL0Koe9WLLIZDbFT9VgQsd2OaZDmUL5UlkXVF'
+#     }
 
-    response = requests.post(SMS_API_URL_TEMPLATE, data=sms_params, headers=headers)
+#     response = requests.post(SMS_API_URL_TEMPLATE, data=sms_params, headers=headers)
 
-    if response.status_code != 200:
-        return Response({'error': 'Failed to send OTP'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+#     if response.status_code != 200:
+#         return Response({'error': 'Failed to send OTP'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    # Create the user profile
-    user_profile = UserProfile(
-        phone_number=phone_number,
-        otp=otp,
-        otp_expiration=otp_expiration
-    )
-    user_profile.set_password(password)
-    user_profile.save()
+#     # Create the user profile
+#     user_profile = UserProfile(
+#         phone_number=phone_number,
+#         otp=otp,
+#         otp_expiration=otp_expiration
+#     )
+#     user_profile.set_password(password)
+#     user_profile.save()
 
-    serializer = UserProfileSerializer(user_profile)
-    return Response(serializer.data, status=status.HTTP_201_CREATED)
+#     serializer = UserProfileSerializer(user_profile)
+#     return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 # @api_view(['POST'])
 # def register_user(request):
@@ -104,6 +104,49 @@ def register_user(request):
 #     serializer = UserProfileSerializer(user_profile)
 #     return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+
+greenweburl = "http://api.greenweb.com.bd/api.php"
+token = "10208204959169824539951b0b11f7c471a0eafdeb86a4e8d9d90"
+
+@api_view(['POST'])
+def register_user(request):
+    phone_number = request.data.get('phone_number')
+    password = request.data.get('password')
+
+    if not phone_number or not password:
+        return Response({'error': 'Phone number and password are required'}, status=status.HTTP_400_BAD_REQUEST)
+
+    if UserProfile.objects.filter(phone_number=phone_number).exists():
+        return Response({'error': 'User with this phone number already exists'}, status=status.HTTP_400_BAD_REQUEST)
+
+    otp = ''.join(random.choices('0123456789', k=6))
+    otp_expiration = timezone.now() + timedelta(minutes=10)
+
+    # Send OTP via GreenWeb SMS API
+    to = f'{phone_number}'  # Format the phone number as per GreenWeb's requirement
+    message = f'Your OTP is {otp}'
+
+    data = {
+        'token': token,
+        'to': to,
+        'message': message
+    }
+
+    response = requests.post(url=greenweburl, data=data)
+
+    if response.status_code != 200:
+        return Response({'error': 'Failed to send OTP'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    user_profile = UserProfile(
+        phone_number=phone_number,
+        otp=otp,
+        otp_expiration=otp_expiration
+    )
+    user_profile.set_password(password)
+    user_profile.save()
+
+    serializer = UserProfileSerializer(user_profile)
+    return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 @api_view(['POST'])
 def verify_otp(request):
